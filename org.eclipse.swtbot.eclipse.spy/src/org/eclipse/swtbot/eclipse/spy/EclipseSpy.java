@@ -66,7 +66,7 @@ public class EclipseSpy {
 
 	private void createOutputText() {
 		output = new StyledText(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY);
-		output.setLayoutData(new GridData(GridData.FILL_HORIZONTAL, GridData.FILL_VERTICAL, true, true));
+		output.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		output.setText("To toggle, or freeze info on a particular control, press CTRL+SHIFT: \n");
 		if (isMac()){
 			output.setFont(new Font(Display.getCurrent(), "Monaco", 11, SWT.NONE)); //$NON-NLS-1$
