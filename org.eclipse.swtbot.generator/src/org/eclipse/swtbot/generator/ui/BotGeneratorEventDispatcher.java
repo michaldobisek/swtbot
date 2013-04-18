@@ -41,6 +41,10 @@ public class BotGeneratorEventDispatcher implements Listener {
 	}
 
 	public void handleEvent(Event event) {
+	  if(!recording) {
+	    return;
+	  }
+	  
 		if (this.ignoredShell != null && event.widget instanceof Control && this.ignoredShell.equals(getShell((Control)event.widget))) {
 			return;
 		}
