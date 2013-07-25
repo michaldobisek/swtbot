@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -155,9 +156,24 @@ public abstract class AbstractSWTBot<T extends Widget> {
 					log.warn(MessageFormat.format("Widget is not enabled: {0}", AbstractSWTBot.this)); //$NON-NLS-1$
 					return;
 				}
-				log.trace(MessageFormat.format("Sending event {0} to {1}", result)); //$NON-NLS-1$
-				widget.notifyListeners(eventType, createEvent);
-				log.debug(MessageFormat.format("Sent event {0} to {1}", result)); //$NON-NLS-1$
+				
+				GC createdGc = null;
+				try {
+				  // some events need GC to work OK
+				  if(createEvent.gc == null && (eventType == SWT.PaintItem || eventType == SWT.MeasureItem || eventType == SWT.EraseItem)) {
+				    createdGc = new GC(widget.getDisplay());
+				    createEvent.gc = createdGc;
+				  }
+				  
+  				log.trace(MessageFormat.format("Sending event {0} to {1}", result)); //$NON-NLS-1$
+  				widget.notifyListeners(eventType, createEvent);
+  				log.debug(MessageFormat.format("Sent event {0} to {1}", result)); //$NON-NLS-1$
+  				
+				} finally {
+				  if(createdGc != null) {
+				    createdGc.dispose();
+				  }
+				}
 			}
 		});
 
